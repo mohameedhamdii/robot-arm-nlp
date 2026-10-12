@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natural-Language Robot Arm | Mission Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="top-nav">
+      <div class="logo-area">
+        <div class="status-dot pulsing"></div>
+        <div class="brand">
+          <span class="title">VLA-ROBOTIC ARM 6-DOF</span>
+          <span class="subtitle">Vision-Language-Action Orchestrator</span>
+        </div>
+      </div>
+
+      <div class="system-pills">
+        <div class="pill"><span class="label">NODE:</span> <span class="val" id="node-status">ONLINE</span></div>
+        <div class="pill"><span class="label">LLM:</span> <span class="val">Phi-3 / Rule Engine</span></div>
+        <div class="pill"><span class="label">VISION:</span> <span class="val">OpenCV HSV</span></div>
+      </div>
+
+      <div class="action-buttons">
+        <button id="btn-estop" class="btn-danger" title="Emergency Stop">STOP</button>
+        <button id="btn-reset" class="btn-secondary" title="Reset Arm">HOME</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Grid -->
+    <main class="main-grid">
+      <!-- Left Column: Camera Perception Feed -->
+      <section class="card glass-card stream-card">
+        <div class="card-header">
+          <h2><span class="icon">📷</span> Top-Down Vision Feed</h2>
+          <span class="badge" id="camera-badge">640 × 480 @ 15fps</span>
+        </div>
+        <div class="stream-wrapper">
+          <img id="video-stream" src="/video_feed" alt="Camera Live Feed" />
+          <div class="overlay-hint">Homography Calibrated (mm)</div>
+        </div>
+        <div class="objects-summary">
+          <div class="summary-header">Detected Objects in Scene:</div>
+          <div id="objects-tag-list" class="tags-row">
+            <span class="tag tag-red">red_block (-50, 140)</span>
+            <span class="tag tag-blue">blue_mat (60, 180)</span>
+            <span class="tag tag-green">green_block (40, 110)</span>
+            <span class="tag tag-yellow">yellow_mat (-70, 200)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Center Column: Kinematics 2D/3D Arm Visualizer -->
+      <section class="card glass-card visualizer-card">
+        <div class="card-header">
+          <h2><span class="icon">🦾</span> Kinematic Skeleton & Workspace</h2>
+          <span class="badge" id="fk-badge">TCP: (0.0, 120.0, 100.0) mm</span>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="arm-canvas" width="480" height="340"></canvas>
+          <div class="canvas-legend">
+            <span><i class="legend-dot base"></i> Base</span>
+            <span><i class="legend-dot arm"></i> Links</span>
+            <span><i class="legend-dot tcp"></i> TCP Gripper</span>
+          </div>
+        </div>
+
+        <!-- Telemetry Angle Gauges -->
+        <div class="gauges-grid">
+          <div class="gauge-card">
+            <div class="gauge-label">Base Yaw</div>
+            <div class="gauge-val" id="val-base">90.0°</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="bar-base" style="width: 50%;"></div></div>
+          </div>
+          <div class="gauge-card">
+            <div class="gauge-label">Shoulder</div>
+            <div class="gauge-val" id="val-shoulder">90.0°</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="bar-shoulder" style="width: 50%;"></div></div>
+          </div>
+          <div class="gauge-card">
+            <div class="gauge-label">Elbow</div>
+            <div class="gauge-val" id="val-elbow">90.0°</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="bar-elbow" style="width: 50%;"></div></div>
+          </div>
+          <div class="gauge-card">
+            <div class="gauge-label">Wrist Pitch</div>
+            <div class="gauge-val" id="val-wpitch">90.0°</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="bar-wpitch" style="width: 50%;"></div></div>
+          </div>
+          <div class="gauge-card">
+            <div class="gauge-label">Wrist Roll</div>
+            <div class="gauge-val" id="val-wroll">90.0°</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="bar-wroll" style="width: 50%;"></div></div>
+          </div>
+          <div class="gauge-card">
+            <div class="gauge-label">Gripper</div>
+            <div class="gauge-val" id="val-gripper">30.0°</div>
+            <div class="gauge-bar"><div class="gauge-fill" id="bar-gripper" style="width: 17%;"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right Column: Command Console & Execution Logs -->
+      <section class="card glass-card console-card">
+        <div class="card-header">
+          <h2><span class="icon">💬</span> Natural-Language Prompt Console</h2>
+          <span class="badge badge-accent" id="exec-state">READY</span>
+        </div>
+
+        <div class="quick-prompts">
+          <span class="quick-title">Quick Commands:</span>
+          <div class="chips-row">
+            <button class="chip" data-cmd="pick up the red block and place it on the blue mat">Pick Red ➔ Blue Mat</button>
+            <button class="chip" data-cmd="put the green block on the yellow mat">Put Green ➔ Yellow Mat</button>
+            <button class="chip" data-cmd="move the blue block to the red mat">Move Blue ➔ Red Mat</button>
+            <button class="chip" data-cmd="home">Return Home</button>
+          </div>
+        </div>
+
+        <form id="cmd-form" class="cmd-input-bar">
+          <input type="text" id="cmd-input" placeholder="Type instruction, e.g. 'pick up the red block and place it on the blue mat'..." autocomplete="off" />
+          <button type="submit" id="btn-submit" class="btn-primary">Execute</button>
+        </form>
+
+        <div class="logs-container">
+          <div class="logs-header">Execution Trace:</div>
+          <div id="logs-list" class="logs-list">
+            <div class="log-entry log-info"><span class="log-time">00:00:00</span> System ready. Awaiting natural language prompt.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

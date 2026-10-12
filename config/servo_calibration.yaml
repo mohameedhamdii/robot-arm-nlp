@@ -1,0 +1,72 @@
+# PCA9685 PWM Servo Driver Configuration and Joint Calibration
+i2c_bus: 1
+i2c_address: 0x40
+pwm_frequency: 50  # 50 Hz standard for RC/robotic servos
+
+# Channel assignments and angular limits for each DOF
+servos:
+  base_yaw:
+    channel: 0
+    min_pulse_us: 500
+    max_pulse_us: 2500
+    min_angle: 0.0
+    max_angle: 180.0
+    center_offset_deg: 0.0
+    inverted: false
+    default_angle: 90.0
+
+  shoulder_pitch:
+    channel: 1
+    min_pulse_us: 500
+    max_pulse_us: 2500
+    min_angle: 15.0
+    max_angle: 165.0
+    center_offset_deg: 0.0
+    inverted: false
+    default_angle: 90.0
+
+  elbow_pitch:
+    channel: 2
+    min_pulse_us: 500
+    max_pulse_us: 2500
+    min_angle: 15.0
+    max_angle: 165.0
+    center_offset_deg: 0.0
+    inverted: false
+    default_angle: 90.0
+
+  wrist_pitch:
+    channel: 3
+    min_pulse_us: 500
+    max_pulse_us: 2500
+    min_angle: 0.0
+    max_angle: 180.0
+    center_offset_deg: 0.0
+    inverted: false
+    default_angle: 90.0
+
+  wrist_roll:
+    channel: 4
+    min_pulse_us: 500
+    max_pulse_us: 2500
+    min_angle: 0.0
+    max_angle: 180.0
+    center_offset_deg: 0.0
+    inverted: false
+    default_angle: 90.0
+
+  gripper:
+    channel: 5
+    min_pulse_us: 500
+    max_pulse_us: 2500
+    min_angle: 0.0
+    max_angle: 180.0
+    open_angle: 30.0
+    close_angle: 110.0
+    center_offset_deg: 0.0
+    inverted: false
+    default_angle: 30.0
+
+trajectory:
+  step_delay_s: 0.05
+  default_steps: 20

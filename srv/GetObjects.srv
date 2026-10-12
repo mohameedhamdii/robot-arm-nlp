@@ -1,0 +1,10 @@
+# Request latest perceived objects in the workspace
+bool refresh
+---
+# List of perceived objects with workspace coordinates in mm
+string[] names
+string[] types
+float64[] x
+float64[] y
+float64[] z
+float64[] confidence

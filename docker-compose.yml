@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  robot-arm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: robot_arm_nlp
+    network_mode: "host"
+    privileged: true
+    devices:
+      - "/dev/i2c-1:/dev/i2c-1"
+      - "/dev/video0:/dev/video0"
+      - "/dev/snd:/dev/snd"
+    volumes:
+      - ./config:/ros2_ws/src/robot_arm_nlp/config
+      - ./models:/ros2_ws/src/robot_arm_nlp/models
+    environment:
+      - PYTHONUNBUFFERED=1
+      - ROBOT_ARM_LLM_PATH=/ros2_ws/src/robot_arm_nlp/models/phi-3-mini-4k-instruct.Q4_K_M.gguf
+    restart: unless-stopped

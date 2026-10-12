@@ -1,0 +1,25 @@
+# Physical Dimensions and Reachability Limits of the 6-DOF Manipulator (in mm)
+base_height: 65.0       # From base mounting plane to shoulder joint axis
+shoulder_length: 105.0   # From shoulder axis to elbow axis
+elbow_length: 100.0      # From elbow axis to wrist pitch axis
+wrist_length: 70.0       # From wrist pitch axis to wrist roll / gripper base
+gripper_length: 55.0     # From gripper mount to tip of fingers
+
+workspace:
+  x_min: -150.0
+  x_max: 150.0
+  y_min: 50.0
+  y_max: 250.0
+  z_min: 0.0
+  z_max: 200.0
+
+# Canonical operational Z heights (in mm)
+hover_height: 80.0
+grasp_height: 15.0
+place_height: 20.0
+
+# Default resting home position (in mm)
+home_position:
+  x: 0.0
+  y: 120.0
+  z: 100.0

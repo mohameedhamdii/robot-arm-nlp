@@ -1,0 +1,23 @@
+# Core Robotics, Kinematics & Vision
+numpy>=1.24.0
+opencv-python-headless>=4.8.0
+pyyaml>=6.0.0
+scipy>=1.10.0
+
+# Hardware Actuation (Raspberry Pi & PCA9685)
+# Note: adafruit-circuitpython-servokit requires I2C / Linux environment
+adafruit-circuitpython-servokit>=1.3.16; sys_platform == 'linux'
+adafruit-blinka>=8.0.0; sys_platform == 'linux'
+
+# On-Device Language Model
+llama-cpp-python>=0.2.75; sys_platform == 'linux'
+
+# Web Dashboard & Telemetry
+fastapi>=0.100.0
+uvicorn>=0.23.0
+websockets>=11.0.0
+pydantic>=2.0.0
+
+# Testing & Quality
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
